@@ -11,5 +11,4 @@ sofa
 bookcase
 board
 clutter
-beam
 stairs

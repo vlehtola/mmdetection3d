@@ -1,8 +1,9 @@
 import argparse
 from os import path as osp
-
+import glob
 import mmengine
 from indoor3d_util import export
+from split_data import split_las_file
 
 # example filename: ITC-KUL_constructor/ITC_BUILDING/2021/PCD/pcd-tls/2021_labels.las
 
@@ -21,32 +22,29 @@ parser.add_argument(
     help='The path of the file that stores the annotation names.')
 args = parser.parse_args()
 
-# here we open() the meta_data files to read Annotation file directories. need to replace with laspy ++VL
+# here we open() the meta_data files to read las filenames
 anno_paths = [line.rstrip() for line in open(args.ann_file)]
 anno_paths = [osp.join(args.data_dir, p) for p in anno_paths]
 
 output_folder = args.output_folder
 mmengine.mkdir_or_exist(output_folder)
 
-# Note: there is an extra character in the v1.2 data in Area_5/hallway_6.
-# It's fixed manually here.
-# Refer to https://github.com/AnTao97/dgcnn.pytorch/blob/843abe82dd731eb51a4b3f70632c2ed3c60560e9/prepare_data/collect_indoor3d_data.py#L18  # noqa
-# revise_file = osp.join(args.data_dir,
-#                        'Area_5/hallway_6/Annotations/ceiling_1.txt')
-# with open(revise_file, 'r') as f:
-#     data = f.read()
-#     # replace that extra character with blank space to separate data
-#     data = data[:5545347] + ' ' + data[5545348:]
-# with open(revise_file, 'w') as f:
-#     f.write(data)
-
 for anno_path in anno_paths:
-    print(f'Exporting data from annotation file: {anno_path}')
-    elements = anno_path.split('/')
-    out_filename = \
-        '_'.join(elements[1:-1])
-    out_filename = osp.join(output_folder, out_filename)
-    if osp.isfile(f'{out_filename}_point.npy'):
-        print('File already exists. skipping.')
-        continue
-    export(anno_path, out_filename)
+    print(f'Splitting data file: {anno_path}')
+    las_files = split_las_file(anno_path)    
+    elems = anno_path.split('/')
+    anno_path = '/'.join(elems[0:-1])
+    #las_files = glob.glob(osp.join(anno_path, '/*.las'))
+    print(anno_path, las_files)
+    for las_filepath in las_files:        
+        print(f'Exporting data from annotation file: {las_filepath}')
+        elements = las_filepath.split('/')
+        out_filename = \
+            '_'.join(elements[1:])
+        out_filename = out_filename[:-4]  # omit .las
+        out_filename = osp.join(output_folder, out_filename)
+        if osp.isfile(f'{out_filename}_point.npy'):
+            print('File already exists. skipping.')
+            continue
+        export(las_filepath, out_filename)
+
