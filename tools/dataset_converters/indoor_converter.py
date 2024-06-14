@@ -109,3 +109,24 @@ def create_indoor_info_file(data_path,
                 num_points=4096,
                 label_weight_func=lambda x: 1.0 / np.log(1.2 + x))
             seg_dataset.get_seg_infos()
+
+    elif pkl_prefix == 'itckul':
+        # itckul doesn't have a fixed train-val split
+        # we split the data in three
+        train_dataset = ITCKULSegData(
+            data_root=data_path,
+            ann_file=train_filename,
+            split='train',
+            num_points=8192,
+            label_weight_func=lambda x: 1.0 / np.log(1.2 + x))
+        # TODO: do we need to generate on val set?
+        val_dataset = ITCKULSegData(
+            data_root=data_path,
+            ann_file=val_filename,
+            split='val',
+            num_points=8192,
+            label_weight_func=lambda x: 1.0 / np.log(1.2 + x))
+        # no need to generate for test set
+        train_dataset.get_seg_infos()
+        val_dataset.get_seg_infos()
+
