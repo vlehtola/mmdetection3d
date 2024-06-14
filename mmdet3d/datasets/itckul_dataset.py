@@ -48,7 +48,7 @@ class ITCKULDataset(Det3DDataset):
             Defaults to False.
     """
     METAINFO = {
-        'classes': ('table', 'chair', 'sofa', 'bookcase', 'board', 'stairs'),
+        'classes': ('table', 'chair', 'sofa', 'bookcase', 'board', 'stair'),
         # the valid ids of segmentation annotations
         'seg_valid_class_ids': (7, 8, 9, 10, 11, 14),
         'seg_all_class_ids':
@@ -206,15 +206,15 @@ class ITCKULSegDataset(Seg3DDataset):
     METAINFO = {
         'classes':
         ('ceiling', 'floor', 'wall', 'beam', 'column', 'window', 'door',
-         'table', 'chair', 'sofa', 'bookcase', 'board', 'clutter', 'stair'),
+         'table', 'chair', 'sofa', 'bookcase', 'board', 'clutter', 'stair', 'unlabeled'),
         'palette': [[0, 255, 0], [0, 0, 255], [0, 255, 255], [255, 255, 0],
                     [255, 0, 255], [100, 100, 255], [200, 200, 100],
                     [170, 120, 200], [255, 0, 0], [200, 100, 100],
                     [10, 200, 100], [200, 200, 200], [50, 50, 50], [0, 200, 0]],
         'seg_valid_class_ids':
-        tuple(range(14)),
+        tuple(range(15)),
         'seg_all_class_ids':
-        tuple(range(14))  # possibly with 'stair' class
+        tuple(range(15)) 
     }
 
     def __init__(self,
@@ -264,15 +264,15 @@ class ITCKULInstanceSegDataset(Seg3DDataset):
     METAINFO = {
         'classes':
         ('ceiling', 'floor', 'wall', 'beam', 'column', 'window', 'door',
-         'table', 'chair', 'sofa', 'bookcase', 'board', 'clutter', 'stairs'),
+         'table', 'chair', 'sofa', 'bookcase', 'board', 'clutter', 'stair','unlabeled'),
         'palette': [[0, 255, 0], [0, 0, 255], [0, 255, 255], [255, 255, 0],
                     [255, 0, 255], [100, 100, 255], [200, 200, 100],
                     [170, 120, 200], [255, 0, 0], [200, 100, 100],
                     [10, 200, 100], [200, 200, 200], [50, 50, 50], [0, 200, 0]],
         'seg_valid_class_ids':
-        tuple(range(14)),
+        tuple(range(15)),
         'seg_all_class_ids':
-        tuple(range(14))  # possibly with 'stair' class
+        tuple(range(15))  
     }
    
     def __init__(self,

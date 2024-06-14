@@ -686,7 +686,7 @@ def update_itckul_infos(pkl_path, out_dir):
     METAINFO = {
         'classes':
         ('ceiling', 'floor', 'wall', 'beam', 'column', 'window', 'door',
-        'table', 'chair', 'sofa', 'bookcase', 'board', 'clutter', 'stair')
+        'table', 'chair', 'sofa', 'bookcase', 'board', 'clutter', 'stair', 'unlabeled')
     }
     print(f'Reading from input file: {pkl_path}.')
     data_list = mmengine.load(pkl_path)

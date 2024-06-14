@@ -5,7 +5,7 @@ data_root = 'data/itckul/'
 metainfo = dict(
     classes = (
     'ceiling', 'floor', 'wall', 'beam', 'column', 'window', 'door',
-    'table', 'chair', 'sofa', 'bookcase', 'board', 'clutter', 'stairs'
+    'table', 'chair', 'sofa', 'bookcase', 'board', 'clutter', 'stair', 'unlabeled'
 ))
 
 # Example to use different file client
