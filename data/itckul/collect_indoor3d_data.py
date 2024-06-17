@@ -30,21 +30,22 @@ output_folder = args.output_folder
 mmengine.mkdir_or_exist(output_folder)
 
 for anno_path in anno_paths:
-    print(f'Splitting data file: {anno_path}')
-    las_files = split_las_file(anno_path)    
+    print(f'Splitting data file: {anno_path}')    
     elems = anno_path.split('/')
-    anno_path = '/'.join(elems[0:-1])
-    #las_files = glob.glob(osp.join(anno_path, '/*.las'))
+    laspath = '/'.join(elems[0:-1]) # directory
+    las_filename = elems[-1]
+    las_files = split_las_file(laspath, las_filename)    
+    #las_files = glob.glob(osp.join(anno_path, '/*.las')) 
     print(anno_path, las_files)
     for las_filepath in las_files:        
         print(f'Exporting data from annotation file: {las_filepath}')
         elements = las_filepath.split('/')
-        out_filename = \
-            '_'.join(elements[1:])
+        out_filename = elements[-1]  # just the filename
         out_filename = out_filename[:-4]  # omit .las
         out_filename = osp.join(output_folder, out_filename)
         if osp.isfile(f'{out_filename}_point.npy'):
             print('File already exists. skipping.')
             continue
         export(las_filepath, out_filename)
+        #TODO: remove the split las file to save diskspace, i.e., las_filepath
 
