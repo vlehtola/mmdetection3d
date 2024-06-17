@@ -37,4 +37,7 @@ RUN conda clean --all \
     && cd /mmdetection3d \
     && pip install --no-cache-dir -e .
 
+# Needed for itckul las files
+RUN pip install laspy
+
 WORKDIR /mmdetection3d
