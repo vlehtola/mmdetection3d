@@ -375,6 +375,12 @@ if __name__ == '__main__':
             info_prefix=args.extra_tag,
             out_dir=args.out_dir,
             workers=args.workers)
+    elif args.dataset == 'itckul':
+        itckul_data_prep(
+            root_path=args.root_path,
+            info_prefix=args.extra_tag,
+            out_dir=args.out_dir,
+            workers=args.workers)
     elif args.dataset == 's3dis':
         s3dis_data_prep(
             root_path=args.root_path,
