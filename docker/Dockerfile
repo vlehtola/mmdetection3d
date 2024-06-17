@@ -41,3 +41,5 @@ RUN conda clean --all \
 RUN pip install laspy
 
 WORKDIR /mmdetection3d
+# For development, Check for updates that are not cached
+RUN git pull
