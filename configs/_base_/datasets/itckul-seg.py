@@ -1,8 +1,10 @@
-# For itckul seg we usually do 13-class segmentation
-class_names = ('ceiling', 'floor', 'wall', 'beam', 'column', 'window', 'door',
-               'table', 'chair', 'sofa', 'bookcase', 'board', 'clutter', 'stairs')
+# For itckul seg we may do 14-class segmentation, which may be pre-trained on s3dis
+class_names = (
+    'ceiling', 'floor', 'wall', 'beam', 'column', 'window', 'door',
+    'table', 'chair', 'sofa', 'bookcase', 'board', 'clutter', 'stairs'
+)
 metainfo = dict(classes=class_names)
-dataset_type = 'itckulSegDataset'
+dataset_type = 'ITCKULSegDataset'
 data_root = 'data/itckul/'
 input_modality = dict(use_lidar=True, use_camera=False)
 data_prefix = dict(
@@ -25,10 +27,7 @@ data_prefix = dict(
 #      }))
 backend_args = None
 
-num_points = 4096
-# TODO!! VL
-train_area = [1, 2, 3, 4, 6]
-test_area = 5
+num_points = 8192
 train_pipeline = [
     dict(
         type='LoadPointsFromFile',
@@ -49,9 +48,9 @@ train_pipeline = [
     dict(
         type='IndoorPatchPointSample',
         num_points=num_points,
-        block_size=1.0,
+        block_size=1.5,
         ignore_index=len(class_names),
-        use_normalized_coord=True,
+        use_normalized_coord=False,
         enlarge_size=0.2,
         min_unique_num=None),
     dict(type='NormalizePointsColor', color_mean=None),
@@ -119,8 +118,6 @@ tta_pipeline = [
         ], [dict(type='Pack3DDetInputs', keys=['points'])]])
 ]
 
-# train on area 1, 2, 3, 4, 6
-# test on area 5
 train_dataloader = dict(
     batch_size=8,
     num_workers=4,
@@ -129,15 +126,13 @@ train_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_files=[f'itckul_infos_Area_{i}.pkl' for i in train_area],
+        ann_file='itckul_infos_train.pkl',
         metainfo=metainfo,
         data_prefix=data_prefix,
         pipeline=train_pipeline,
         modality=input_modality,
         ignore_index=len(class_names),
-        scene_idxs=[
-            f'seg_info/Area_{i}_resampled_scene_idxs.npy' for i in train_area
-        ],
+        scene_idxs=data_root + 'seg_info/train_resampled_scene_idxs.npy',
         test_mode=False,
         backend_args=backend_args))
 test_dataloader = dict(
@@ -149,13 +144,12 @@ test_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_files=f'itckul_infos_Area_{test_area}.pkl',
+        ann_file='itckul_infos_val.pkl',
         metainfo=metainfo,
         data_prefix=data_prefix,
         pipeline=test_pipeline,
         modality=input_modality,
         ignore_index=len(class_names),
-        scene_idxs=f'seg_info/Area_{test_area}_resampled_scene_idxs.npy',
         test_mode=True,
         backend_args=backend_args))
 val_dataloader = test_dataloader
