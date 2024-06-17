@@ -1,4 +1,3 @@
-# Copyright (c) OpenMMLab. All rights reserved.
 import os
 from concurrent import futures as futures
 from os import path as osp
@@ -16,9 +15,10 @@ class ITCKULData(object):
         root_path (str): Root path of the raw data.
     """
 
-    def __init__(self, root_path):
+    def __init__(self, root_path, split='train'):
         self.root_dir = root_path
         self.split = split
+        self.split_dir = osp.join(root_path)
         self.data_dir = osp.join(root_path,
                                  'itckul')
 
@@ -29,7 +29,12 @@ class ITCKULData(object):
             cat_id: i
             for i, cat_id in enumerate(list(self.cat_ids))
         }
-
+        assert split in ['train', 'val', 'test']
+        split_file = osp.join(self.root_dir, 'meta_data',
+                              f'itckul_{split}.txt')
+        mmengine.check_file_exist(split_file)
+        self.sample_id_list = mmengine.list_from_file(split_file)
+        self.test_mode = (split == 'test')
 
     def __len__(self):
         return len(self.sample_id_list)
