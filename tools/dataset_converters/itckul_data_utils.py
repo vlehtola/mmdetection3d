@@ -171,9 +171,9 @@ class ITCKULSegData(object):
         self.data_infos = mmengine.load(ann_file)
         self.num_points = num_points
 
-        self.all_ids = np.arange(13)  # all possible ids
+        self.all_ids = np.arange(14)  # all possible ids
         self.cat_ids = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
-                                 12])  # used for seg task
+                                 12,13])  # used for seg task
         self.ignore_index = len(self.cat_ids)
 
         self.cat_id2class = np.ones(
