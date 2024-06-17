@@ -28,7 +28,7 @@ def create_indoor_info_file(data_path,
         workers (int, optional): Number of threads to be used. Default: 4.
     """
     assert os.path.exists(data_path)
-    assert pkl_prefix in ['sunrgbd', 'scannet', 's3dis'], \
+    assert pkl_prefix in ['sunrgbd', 'scannet', 's3dis', 'itckul'], \
         f'unsupported indoor dataset {pkl_prefix}'
     save_path = data_path if save_path is None else save_path
     assert os.path.exists(save_path)
