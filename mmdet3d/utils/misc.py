@@ -28,6 +28,9 @@ def replace_ceph_backend(cfg):
     elif 'scannet' in cfg_pretty_text:
         replace_strs = replace_strs.replace('DATA', 'scannet')
         replace_strs = replace_strs.replace('CEPH', 'scannet_processed')
+    elif 'itckul' in cfg_pretty_text:
+        replace_strs = replace_strs.replace('DATA', 'itckul')
+        replace_strs = replace_strs.replace('CEPH', 'itckul_processed')
     elif 's3dis' in cfg_pretty_text:
         replace_strs = replace_strs.replace('DATA', 's3dis')
         replace_strs = replace_strs.replace('CEPH', 's3dis_processed')

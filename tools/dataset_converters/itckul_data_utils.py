@@ -144,7 +144,7 @@ class ITCKULData(object):
         return annotation
 
 
-class itckulSegData(object):
+class ITCKULSegData(object):
     """itckul dataset used to generate infos for semantic segmentation task.
 
     Args:
