@@ -84,9 +84,11 @@ def export(anno_path, out_filename):
     13: 5,    # 'Windows' -> 'window'
     14: 3     # 'Railings' -> 'beam'
     }
-    
-    # Remap labels
-    sem_labels = map_labels(sem_labels, mapping)
+    # Define the default label for 'clutter'
+    default_label = 12
+
+    # Remap labels. Anything undefined in the mapping is given the default_label
+    sem_labels = map_labels(sem_labels, mapping, default_label)
 
     # Combine points, semantic labels, and instance labels
     data = np.column_stack((points, sem_labels, ins_labels))
@@ -101,9 +103,13 @@ def export(anno_path, out_filename):
     np.save(f'{out_filename}_ins_label.npy', data[:, 7].astype(np.int64))
 
 # Function to map original labels to new labels
-def map_labels(orig_labels, mapping):
+def map_labels(orig_labels, mapping, default_label):
     new_labels = np.copy(orig_labels)
-    for old_label, new_label in mapping.items():
-        if new_label is not None:
-            new_labels[orig_labels == old_label] = new_label
+    unique_labels = np.unique(orig_labels)
+    for label in unique_labels:
+        if label in mapping and mapping[label] is not None:
+            new_labels[orig_labels == label] = mapping[label]
+        else:
+            new_labels[orig_labels == label] = default_label
     return new_labels
+
