@@ -1,7 +1,7 @@
 # For itckul seg we may do 14-class segmentation, which may be pre-trained on s3dis
 class_names = (
     'ceiling', 'floor', 'wall', 'beam', 'column', 'window', 'door',
-    'table', 'chair', 'sofa', 'bookcase', 'board', 'clutter', 'stairs'
+    'table', 'chair', 'sofa', 'bookcase', 'board', 'clutter', 'stair'
 )
 metainfo = dict(classes=class_names)
 dataset_type = 'ITCKULSegDataset'
