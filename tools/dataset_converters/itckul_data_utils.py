@@ -131,7 +131,7 @@ class ITCKULData(object):
             ids = pts_instance_mask == i
             mask = pts_semantic_mask[ids]
             # check if all instance points have same semantic label
-            if(mask.size == 0):
+            if(mask.size == 0): ## ++VL
                 continue
             assert mask.min() == mask.max()
             label = mask[0]
@@ -168,9 +168,12 @@ class ITCKULSegData(object):
     def __init__(self,
                  data_root,
                  ann_file,
+                 split='train',
                  num_points=4096,
                  label_weight_func=None):
         self.data_root = data_root
+        self.split = split
+        assert split in ['train', 'val', 'test']
         self.data_infos = mmengine.load(ann_file)
         self.num_points = num_points
 
