@@ -49,6 +49,45 @@ def export(anno_path, out_filename):
     sem_labels = las_file.segmentation_labels #classification
     ins_labels = las_file.object_labels
 
+    # Map from 200 semantic label format of itckul dataset to 14 labels of s3dis format
+    # Also, add stair class and railing class.
+
+    # orig_classes = {
+    #     0: "Structural",
+    #     1: "Columns",
+    #     2: "Beams",
+    #     3: "Floors",
+    #     4: "Walls",
+    #     5: "Stairs",
+    #     6: "Roofs",
+    #     7: "CurtainWalls",
+    #     11: "Ceilings",
+    #     12: "Doors",
+    #     13: "Windows",
+    #     14: "Railings"}
+    
+    # class_names = (
+    #     'ceiling', 'floor', 'wall', 'beam', 'column', 'window', 'door',
+    #     'table', 'chair', 'sofa', 'bookcase', 'board', 'clutter', 'stair'
+    #     )  
+    mapping = {
+    0: 12,  # 'Structural' -> 'clutter'
+    1: 4,     # 'Columns' -> 'column'
+    2: 3,     # 'Beams' -> 'beam'
+    3: 1,     # 'Floors' -> 'floor'
+    4: 2,     # 'Walls' -> 'wall'
+    5: 13,    # 'Stairs' -> 'stair'
+    6: 0,     # 'Roofs' -> 'ceiling'
+    7: 2,     # 'CurtainWalls' -> 'wall'
+    11: 0,    # 'Ceilings' -> 'ceiling'
+    12: 6,    # 'Doors' -> 'door'
+    13: 5,    # 'Windows' -> 'window'
+    14: 3     # 'Railings' -> 'beam'
+    }
+    
+    # Remap labels
+    sem_labels = map_labels(sem_labels, mapping)
+
     # Combine points, semantic labels, and instance labels
     data = np.column_stack((points, sem_labels, ins_labels))
 
@@ -61,3 +100,10 @@ def export(anno_path, out_filename):
     np.save(f'{out_filename}_sem_label.npy', data[:, 6].astype(np.int64))
     np.save(f'{out_filename}_ins_label.npy', data[:, 7].astype(np.int64))
 
+# Function to map original labels to new labels
+def map_labels(orig_labels, mapping):
+    new_labels = np.copy(orig_labels)
+    for old_label, new_label in mapping.items():
+        if new_label is not None:
+            new_labels[orig_labels == old_label] = new_label
+    return new_labels

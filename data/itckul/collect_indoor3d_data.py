@@ -47,5 +47,5 @@ for anno_path in anno_paths:
             print('File already exists. skipping.')
             continue
         export(las_filepath, out_filename)
-        #TODO: remove the split las file to save diskspace, i.e., las_filepath
+        #TODO: remove the splitted las files to save diskspace, i.e., las_filepath
 
