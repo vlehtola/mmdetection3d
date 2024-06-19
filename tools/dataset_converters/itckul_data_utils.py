@@ -129,12 +129,15 @@ class ITCKULData(object):
         bboxes, labels = [], []
         for i in range(1, pts_instance_mask.max() + 1):
             ids = pts_instance_mask == i
+            mask = pts_semantic_mask[ids]
             # check if all instance points have same semantic label
-            assert pts_semantic_mask[ids].min() == pts_semantic_mask[ids].max()
-            label = pts_semantic_mask[ids][0]
+            if(mask.size == 0):
+                continue
+            assert mask.min() == mask.max()
+            label = mask[0]
             # keep only furniture objects
             if label in self.cat_ids2class:
-                labels.append(self.cat_ids2class[pts_semantic_mask[ids][0]])
+                labels.append(self.cat_ids2class[mask[0]])
                 pts = points[:, :3][ids]
                 min_pts = pts.min(axis=0)
                 max_pts = pts.max(axis=0)
