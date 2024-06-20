@@ -162,11 +162,9 @@ def itckul_data_prep(root_path, info_prefix, out_dir, workers):
         root_path, info_prefix, out_dir, workers=workers)
     info_train_path = osp.join(out_dir, f'{info_prefix}_infos_train.pkl')
     info_val_path = osp.join(out_dir, f'{info_prefix}_infos_val.pkl')
-    info_test_path = osp.join(out_dir, f'{info_prefix}_infos_test.pkl')
     update_pkl_infos('itckul', out_dir=out_dir, pkl_path=info_train_path)
     update_pkl_infos('itckul', out_dir=out_dir, pkl_path=info_val_path)
-    update_pkl_infos('itckul', out_dir=out_dir, pkl_path=info_test_path)
-
+    
 def sunrgbd_data_prep(root_path, info_prefix, out_dir, workers):
     """Prepare the info file for sunrgbd dataset.
 
