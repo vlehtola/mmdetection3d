@@ -710,23 +710,22 @@ def update_itckul_infos(pkl_path, out_dir):
         anns = ori_info_dict.get('annos', None)
         ignore_class_name = set()
         if anns is not None:
-            temp_data_info['axis_align_matrix'] = anns[
-                'axis_align_matrix'].tolist()
             if anns['gt_num'] == 0:
                 instance_list = []
             else:
-                num_instances = len(anns['name'])
+                num_instances = len(anns['class'])
                 instance_list = []
                 for instance_id in range(num_instances):
                     empty_instance = get_empty_instance()
                     empty_instance['bbox_3d'] = anns['gt_boxes_upright_depth'][
                         instance_id].tolist()
 
-                    if anns['name'][instance_id] in METAINFO['classes']:
-                        empty_instance['bbox_label_3d'] = METAINFO[
-                            'classes'].index(anns['name'][instance_id])
+                    if anns['class'][instance_id] < len(METAINFO['classes']):
+                        empty_instance['bbox_label_3d'] = anns['class'][
+                            instance_id]
                     else:
-                        ignore_class_name.add(anns['name'][instance_id])
+                        ignore_class_name.add(
+                            METAINFO['classes'][anns['class'][instance_id]])
                         empty_instance['bbox_label_3d'] = -1
 
                     empty_instance = clear_instance_unused_keys(empty_instance)
