@@ -206,7 +206,7 @@ class ITCKULSegDataset(Seg3DDataset):
     METAINFO = {
         'classes':
         ('ceiling', 'floor', 'wall', 'beam', 'column', 'window', 'door',
-         'table', 'chair', 'sofa', 'bookcase', 'board', 'clutter', 'stairs'),
+         'table', 'chair', 'sofa', 'bookcase', 'board', 'clutter', 'stair'),
         'palette': [[0, 255, 0], [0, 0, 255], [0, 255, 255], [255, 255, 0],
                     [255, 0, 255], [100, 100, 255], [200, 200, 100],
                     [170, 120, 200], [255, 0, 0], [200, 100, 100],

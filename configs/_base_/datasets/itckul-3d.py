@@ -54,8 +54,7 @@ train_pipeline = [
     dict(
         type='Pack3DDetInputs',
         keys=[
-            'points', 'gt_bboxes_3d', 'gt_labels_3d', 'pts_semantic_mask',
-            'pts_instance_mask'
+            'points', 'gt_bboxes_3d', 'gt_labels_3d'
         ])
 ]
 test_pipeline = [
@@ -127,7 +126,7 @@ test_dataloader = dict(
     dataset=dict(
         type=dataset_type,
         data_root=data_root,
-        ann_file='itckul_infos_val.pkl',
+        ann_file='itckul_infos_test.pkl',
         pipeline=test_pipeline,
         metainfo=metainfo,
         test_mode=True,
