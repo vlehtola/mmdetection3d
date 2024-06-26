@@ -11,4 +11,4 @@ sofa
 bookcase
 board
 clutter
-stairs
+stair
