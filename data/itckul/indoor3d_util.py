@@ -101,6 +101,16 @@ def export(anno_path, out_filename):
     np.save(f'{out_filename}_point.npy', data[:, :6].astype(np.float32))
     np.save(f'{out_filename}_sem_label.npy', data[:, 6].astype(np.int64))
     np.save(f'{out_filename}_ins_label.npy', data[:, 7].astype(np.int64))
+    # Check if exported_labels is not full of zeros
+    if np.all(ins_labels == 0):
+        print(f'Warning: Exported labels in {out_filename}_ins_label.npy are all zeros')
+
+    # Verify label transfer
+    exported_labels = np.load(f'{out_filename}_ins_label.npy')
+    if not np.array_equal(np.sort(ins_labels), np.sort(exported_labels)):
+        print(f'Warning: Label mismatch in file: {out_filename}_ins_label.npy')
+    else:
+        print(f'Labels transferred correctly for file: {out_filename}_ins_label.npy')
 
 # Function to map original labels to new labels
 def map_labels(orig_labels, mapping, default_label):
