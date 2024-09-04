@@ -52,7 +52,7 @@ class ITCKULDataset(Det3DDataset):
         # the valid ids of segmentation annotations
         'seg_valid_class_ids': (7, 8, 9, 10, 11, 14),
         'seg_all_class_ids':
-        tuple(range(1, 15)),  # possibly with 'stair' class
+        tuple(15),
         'palette': [(170, 120, 200), (255, 0, 0), (200, 100, 100),
                     (10, 200, 100), (200, 200, 200), (0, 200, 0)]
     }
@@ -207,10 +207,23 @@ class ITCKULSegDataset(Seg3DDataset):
         'classes':
         ('ceiling', 'floor', 'wall', 'beam', 'column', 'window', 'door',
          'table', 'chair', 'sofa', 'bookcase', 'board', 'clutter', 'stair', 'unlabeled'),
-        'palette': [[0, 255, 0], [0, 0, 255], [0, 255, 255], [255, 255, 0],
-                    [255, 0, 255], [100, 100, 255], [200, 200, 100],
-                    [170, 120, 200], [255, 0, 0], [200, 100, 100],
-                    [10, 200, 100], [200, 200, 200], [50, 50, 50], [0, 200, 0]],
+        'palette': [
+            [0, 255, 0],      # ceiling
+            [0, 0, 255],      # floor
+            [0, 255, 255],    # wall
+            [255, 255, 0],    # beam
+            [255, 0, 255],    # column
+            [100, 100, 255],  # window
+            [200, 200, 100],  # door
+            [170, 120, 200],  # table
+            [255, 0, 0],      # chair
+            [200, 100, 100],  # sofa
+            [10, 200, 100],   # bookcase
+            [200, 200, 200],  # board
+            [50, 50, 50],     # clutter
+            [0, 200, 0],      # stair
+            [0, 0, 0]         # unlabeled
+        ],        
         'seg_valid_class_ids':
         tuple(range(15)),
         'seg_all_class_ids':
@@ -265,10 +278,23 @@ class ITCKULInstanceSegDataset(Seg3DDataset):
         'classes':
         ('ceiling', 'floor', 'wall', 'beam', 'column', 'window', 'door',
          'table', 'chair', 'sofa', 'bookcase', 'board', 'clutter', 'stair','unlabeled'),
-        'palette': [[0, 255, 0], [0, 0, 255], [0, 255, 255], [255, 255, 0],
-                    [255, 0, 255], [100, 100, 255], [200, 200, 100],
-                    [170, 120, 200], [255, 0, 0], [200, 100, 100],
-                    [10, 200, 100], [200, 200, 200], [50, 50, 50], [0, 200, 0]],
+        'palette': [
+            [0, 255, 0],      # ceiling
+            [0, 0, 255],      # floor
+            [0, 255, 255],    # wall
+            [255, 255, 0],    # beam
+            [255, 0, 255],    # column
+            [100, 100, 255],  # window
+            [200, 200, 100],  # door
+            [170, 120, 200],  # table
+            [255, 0, 0],      # chair
+            [200, 100, 100],  # sofa
+            [10, 200, 100],   # bookcase
+            [200, 200, 200],  # board
+            [50, 50, 50],     # clutter
+            [0, 200, 0],      # stair
+            [0, 0, 0]         # unlabeled
+        ],
         'seg_valid_class_ids':
         tuple(range(15)),
         'seg_all_class_ids':
