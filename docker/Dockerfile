@@ -31,10 +31,20 @@ RUN apt-get update \
 RUN pip install openmim && \
     mim install "mmengine" "mmcv>=2.0.0rc4" "mmdet>=3.0.0"
 
+    # Needed for itckul las files
+RUN pip install laspy
+
 # Install MMDetection3D
-RUN conda clean --all \
-    && git clone https://github.com/open-mmlab/mmdetection3d.git -b dev-1.x /mmdetection3d \
+#RUN conda clean --all \
+RUN git clone https://github.com/vlehtola/mmdetection3d.git -b itckul_oneformer3d /mmdetection3d \
     && cd /mmdetection3d \
     && pip install --no-cache-dir -e .
 
 WORKDIR /mmdetection3d
+
+# Add a build argument for invalidating cache, use with
+# docker build --build-arg CACHEBUST=$(date +%s)
+ARG CACHEBUST=1
+
+# For development, Check for updates that are not cached
+RUN git pull

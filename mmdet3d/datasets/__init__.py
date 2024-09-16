@@ -6,6 +6,7 @@ from .lyft_dataset import LyftDataset
 from .nuscenes_dataset import NuScenesDataset
 # yapf: enable
 from .s3dis_dataset import S3DISDataset, S3DISSegDataset
+from .itckul_dataset import (ITCKULDataset, ITCKULSegDataset, ITCKULInstanceSegDataset)
 from .scannet_dataset import (ScanNetDataset, ScanNetInstanceSegDataset,
                               ScanNetSegDataset)
 from .seg3d_dataset import Seg3DDataset
@@ -30,6 +31,7 @@ __all__ = [
     'ObjectSample', 'RandomFlip3D', 'ObjectNoise', 'GlobalRotScaleTrans',
     'PointShuffle', 'ObjectRangeFilter', 'PointsRangeFilter',
     'LoadPointsFromFile', 'S3DISSegDataset', 'S3DISDataset',
+    'ITCKULDataset', 'ITCKULSegDataset', 'ITCKULInstanceSegDataset',
     'NormalizePointsColor', 'IndoorPatchPointSample', 'IndoorPointSample',
     'PointSample', 'LoadAnnotations3D', 'GlobalAlignment', 'SUNRGBDDataset',
     'ScanNetDataset', 'ScanNetSegDataset', 'ScanNetInstanceSegDataset',

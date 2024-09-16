@@ -8,7 +8,7 @@ from tools.dataset_converters.s3dis_data_utils import S3DISData, S3DISSegData
 from tools.dataset_converters.scannet_data_utils import (ScanNetData,
                                                          ScanNetSegData)
 from tools.dataset_converters.sunrgbd_data_utils import SUNRGBDData
-
+from tools.dataset_converters.itckul_data_utils import ITCKULData, ITCKULSegData
 
 def create_indoor_info_file(data_path,
                             pkl_prefix='sunrgbd',
@@ -28,13 +28,13 @@ def create_indoor_info_file(data_path,
         workers (int, optional): Number of threads to be used. Default: 4.
     """
     assert os.path.exists(data_path)
-    assert pkl_prefix in ['sunrgbd', 'scannet', 's3dis'], \
+    assert pkl_prefix in ['sunrgbd', 'scannet', 's3dis', 'itckul'], \
         f'unsupported indoor dataset {pkl_prefix}'
     save_path = data_path if save_path is None else save_path
     assert os.path.exists(save_path)
 
     # generate infos for both detection and segmentation task
-    if pkl_prefix in ['sunrgbd', 'scannet']:
+    if pkl_prefix in ['sunrgbd', 'scannet', 'itckul']:
         train_filename = os.path.join(save_path,
                                       f'{pkl_prefix}_infos_train.pkl')
         val_filename = os.path.join(save_path, f'{pkl_prefix}_infos_val.pkl')
@@ -44,6 +44,13 @@ def create_indoor_info_file(data_path,
                 root_path=data_path, split='train', use_v1=use_v1)
             val_dataset = SUNRGBDData(
                 root_path=data_path, split='val', use_v1=use_v1)
+        elif pkl_prefix == 'itckul':
+            # itckul has a train-val-test split
+            train_dataset = ITCKULData(root_path=data_path, split='train')
+            val_dataset = ITCKULData(root_path=data_path, split='val')
+            test_dataset = ITCKULData(root_path=data_path, split='test')
+            test_filename = os.path.join(save_path,
+                                         f'{pkl_prefix}_infos_test.pkl')
         else:
             # ScanNet has a train-val-test split
             train_dataset = ScanNetData(root_path=data_path, split='train')
@@ -109,3 +116,24 @@ def create_indoor_info_file(data_path,
                 num_points=4096,
                 label_weight_func=lambda x: 1.0 / np.log(1.2 + x))
             seg_dataset.get_seg_infos()
+
+    elif pkl_prefix == 'itckul':
+        # itckul has a fixed train-val split
+        # we split the data in three
+        train_dataset = ITCKULSegData(
+            data_root=data_path,
+            ann_file=train_filename,
+            split='train',
+            num_points=8192,
+            label_weight_func=lambda x: 1.0 / np.log(1.2 + x))
+        # TODO: do we need to generate on val set?
+        val_dataset = ITCKULSegData(
+            data_root=data_path,
+            ann_file=val_filename,
+            split='val',
+            num_points=8192,
+            label_weight_func=lambda x: 1.0 / np.log(1.2 + x))
+        # no need to generate for test set
+        train_dataset.get_seg_infos()
+        val_dataset.get_seg_infos()
+
