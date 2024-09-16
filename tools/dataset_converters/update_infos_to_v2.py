@@ -712,6 +712,7 @@ def update_itckul_infos(pkl_path, out_dir):
         if anns is not None:
             if anns['gt_num'] == 0:
                 instance_list = []
+                print(f"Warning: instances dropped. Annotations: {anns}")
             else:
                 num_instances = len(anns['class'])
                 instance_list = []
@@ -745,7 +746,7 @@ def update_itckul_infos(pkl_path, out_dir):
         for ignore_class in ignore_class_name:
             metainfo['categories'][ignore_class] = -1
     metainfo['dataset'] = 'itckul'
-    metainfo['info_version'] = '1.1'
+    metainfo['info_version'] = '1.1a'
 
     converted_data_info = dict(metainfo=metainfo, data_list=converted_list)
 

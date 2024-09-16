@@ -126,30 +126,47 @@ class ITCKULData(object):
                 - class (np.ndarray): Box labels of shape (n,)
                 - gt_num (int): Number of boxes.
         """
+       
         bboxes, labels = [], []
+        
+        # Check instance mask and semantic mask validity
+        print(f"Max instance ID: {pts_instance_mask.max()}")
+        print(f"Unique instance IDs: {np.unique(pts_instance_mask)}")
+        
         for i in range(1, pts_instance_mask.max() + 1):
             ids = pts_instance_mask == i
-            mask = pts_semantic_mask[ids]
-            # check if all instance points have same semantic label
-            if(mask.size == 0): ## ++VL
+            if ids.sum() == 0:
+                print(f"No points found for instance {i}")
                 continue
-            assert mask.min() == mask.max()
+            
+            mask = pts_semantic_mask[ids]
+            if mask.min() != mask.max():
+                print(f"Inconsistent semantic labels for instance {i}")
+                continue
+            
             label = mask[0]
-            # keep only furniture objects
+            # Keep only furniture objects
             if label in self.cat_ids2class:
-                labels.append(self.cat_ids2class[mask[0]])
+                labels.append(self.cat_ids2class[label])
                 pts = points[:, :3][ids]
                 min_pts = pts.min(axis=0)
                 max_pts = pts.max(axis=0)
                 locations = (min_pts + max_pts) / 2
                 dimensions = max_pts - min_pts
-                bboxes.append(np.concatenate((locations, dimensions)))
+                bbox = np.concatenate((locations, dimensions))
+                bboxes.append(bbox)
+                print(f"Instance {i} bounding box: {bbox}")
+
         annotation = dict()
-        # follow ScanNet and SUN RGB-D keys
         annotation['gt_boxes_upright_depth'] = np.array(bboxes)
         annotation['class'] = np.array(labels)
         annotation['gt_num'] = len(labels)
+        
+        # Check final output
+        print(f"Generated {len(bboxes)} bounding boxes and {len(labels)} labels")
+        
         return annotation
+
 
 
 class ITCKULSegData(object):
