@@ -51,8 +51,7 @@ class ITCKULDataset(Det3DDataset):
         'classes': ('table', 'chair', 'sofa', 'bookcase', 'board', 'stair'),
         # the valid ids of segmentation annotations
         'seg_valid_class_ids': (7, 8, 9, 10, 11, 14),
-        'seg_all_class_ids':
-        tuple(15),
+        'seg_all_class_ids': range(15),
         'palette': [(170, 120, 200), (255, 0, 0), (200, 100, 100),
                     (10, 200, 100), (200, 200, 200), (0, 200, 0)]
     }
