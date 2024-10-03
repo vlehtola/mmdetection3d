@@ -137,6 +137,23 @@ class ITCKULDataset(Det3DDataset):
             self.data_prefix.get('pts_semantic_mask', ''),
             info['pts_semantic_mask_path'])
 
+        # Debugging output to ensure the paths are correct
+        print(f"Debug: Instance mask path: {pts_instance_mask_path}")
+        print(f"Debug: Semantic mask path: {pts_semantic_mask_path}")
+        
+        # Check if the instance and semantic mask paths are valid
+        if not osp.exists(pts_instance_mask_path):
+            print(f"Warning: Instance mask file does not exist at {pts_instance_mask_path}")
+        else:
+            info['pts_instance_mask_path'] = pts_instance_mask_path  # Update with the valid path
+        
+        if not osp.exists(pts_semantic_mask_path):
+            print(f"Warning: Semantic mask file does not exist at {pts_semantic_mask_path}")
+        else:
+            info['pts_semantic_mask_path'] = pts_semantic_mask_path  # Update with the valid path
+        
+        # Use the parent class's parse_data_info method for further processing
+
         info = super().parse_data_info(info)
         # only be used in `PointSegClassMapping` in pipeline
         # to map original semantic class to valid category ids.
