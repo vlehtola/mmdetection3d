@@ -136,7 +136,7 @@ class ITCKULData(object):
         for i in range(1, pts_instance_mask.max() + 1):
             ids = pts_instance_mask == i
             if ids.sum() == 0:
-                print(f"No points found for instance {i}")
+                print(f"Empty instance {i}", end='')
                 continue
             
             mask = pts_semantic_mask[ids]
