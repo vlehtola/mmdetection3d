@@ -130,13 +130,11 @@ class ITCKULDataset(Det3DDataset):
             all path has been converted to absolute path.
         """
         info['axis_align_matrix'] = self._get_axis_align_matrix(info)
-        info['pts_instance_mask_path'] = osp.join(
-            self.data_prefix.get('pts_instance_mask', ''),
-            info['pts_instance_mask_path'])
-        info['pts_semantic_mask_path'] = osp.join(
-            self.data_prefix.get('pts_semantic_mask', ''),
-            info['pts_semantic_mask_path'])
-
+        
+        # Construct the absolute path for instance and semantic masks
+        pts_instance_mask_path = osp.join(self.data_prefix.get('pts_instance_mask', ''), info.get('pts_instance_mask_path', ''))
+        pts_semantic_mask_path = osp.join(self.data_prefix.get('pts_semantic_mask', ''), info.get('pts_semantic_mask_path', ''))
+    
         # Debugging output to ensure the paths are correct
         print(f"Debug: Instance mask path: {pts_instance_mask_path}")
         print(f"Debug: Semantic mask path: {pts_semantic_mask_path}")
