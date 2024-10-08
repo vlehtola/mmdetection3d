@@ -37,13 +37,6 @@ ENV PATH="/opt/conda/bin:$PATH" \
 # TORCHSEVER
 RUN pip install torchserve torch-model-archiver
 
-#conda create --name openmmlab python=3.8 -y
-#conda activate openmmlab
-
-## install torch-relavant libraries
-#conda install pytorch==1.12.1 torchvision==0.13.1 torchaudio==0.12.1 cudatoolkit=11.3 -c pytorch
-
-
 # Install MMEngine, MMCV and MMDetection
 RUN pip install openmim
 RUN mim install mmengine==${MMENG}
