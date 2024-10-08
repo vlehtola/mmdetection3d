@@ -24,7 +24,8 @@ class ITCKULData(object):
 
         # Following `GSDN <https://arxiv.org/abs/2006.12356>`_, use 5 furniture
         # classes for detection: table, chair, sofa, bookcase, board.
-        self.cat_ids = np.array([7, 8, 9, 10, 11])
+        self.cat_ids = np.array(range(15))
+        #self.cat_ids = np.array([7, 8, 9, 10, 11])
         self.cat_ids2class = {
             cat_id: i
             for i, cat_id in enumerate(list(self.cat_ids))
@@ -130,9 +131,13 @@ class ITCKULData(object):
         bboxes, labels = [], []
         
         # Check instance mask and semantic mask validity
+        print(f"Points shape: {points.shape}")
+        print(f"Instance mask shape: {pts_instance_mask.shape}")
         print(f"Max instance ID: {pts_instance_mask.max()}")
+        print(f"Semantic mask shape: {pts_semantic_mask.shape}")
         print(f"Unique instance IDs: {np.unique(pts_instance_mask)}")
-        
+        print(f"Unique semantic IDs: {np.unique(pts_semantic_mask)}")
+
         for i in range(1, pts_instance_mask.max() + 1):
             ids = pts_instance_mask == i
             if ids.sum() == 0:

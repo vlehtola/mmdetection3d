@@ -29,11 +29,12 @@ anno_paths = [osp.join(args.data_dir, p) for p in anno_paths]
 output_folder = args.output_folder
 mmengine.mkdir_or_exist(output_folder)
 
-for anno_path in anno_paths:
-    print(f'Splitting data file: {anno_path}')
-    las_directory, las_filename = osp.split(anno_path)
+for anno_path in anno_paths:    
+    #print(f'Splitting data file: {anno_path}')
+    #las_directory, las_filename = osp.split(anno_path)
     #las_files = split_las_file(las_directory, las_filename)    
     las_files = [anno_path]  # skip splitting the las files for debug
+
     elems = anno_path.split('/')
     anno_path = '/'.join(elems[0:-1])
     #las_files = glob.glob(osp.join(anno_path, '/*.las'))
