@@ -24,8 +24,8 @@ class ITCKULData(object):
 
         # Following `GSDN <https://arxiv.org/abs/2006.12356>`_, use 5 furniture
         # classes for detection: table, chair, sofa, bookcase, board.
-        self.cat_ids = np.array(range(15))
         #self.cat_ids = np.array([7, 8, 9, 10, 11])
+        self.cat_ids = np.array(range(15)) # use instances for all classes
         self.cat_ids2class = {
             cat_id: i
             for i, cat_id in enumerate(list(self.cat_ids))

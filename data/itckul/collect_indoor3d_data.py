@@ -30,20 +30,20 @@ output_folder = args.output_folder
 mmengine.mkdir_or_exist(output_folder)
 
 for anno_path in anno_paths:    
-    #print(f'Splitting data file: {anno_path}')
-    #las_directory, las_filename = osp.split(anno_path)
-    #las_files = split_las_file(las_directory, las_filename)    
-    las_files = [anno_path]  # skip splitting the las files for debug
-
+    print(f'Splitting data file: {anno_path}')
+    las_directory, las_filename = osp.split(anno_path)
+    train_paths, val_paths, test_paths = split_las_file(las_directory, las_filename)    
+    #las_files = [anno_path]  # skip splitting the las files for debug
     elems = anno_path.split('/')
     anno_path = '/'.join(elems[0:-1])
     #las_files = glob.glob(osp.join(anno_path, '/*.las'))
+    las_files = train_paths + val_paths + test_paths
     print(anno_path, las_files)
     for las_filepath in las_files:        
         print(f'Exporting data from annotation file: {las_filepath}')
         elements = las_filepath.split('/')
         out_filename = \
-            '_'.join(elements[1:])
+            '_'.join(elements[-1:])
         out_filename = out_filename[:-4]  # omit .las
         out_filename = osp.join(output_folder, out_filename)
         if osp.isfile(f'{out_filename}_point.npy'):
