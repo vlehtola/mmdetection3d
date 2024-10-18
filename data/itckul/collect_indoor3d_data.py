@@ -51,7 +51,9 @@ def process_paths(dataset_type, paths, output_folder):
     with open(output_file, 'a') as file:
         for filename in paths:
             elems = filename.split('/')
-            file.write(f"{elems[-1]}\n")
+            out_filename = elems[-1]
+            out_filename = out_filename[:-4]  # Omit the .las extension
+            file.write(f"{out_filename}\n")
     for las_filepath in paths:        
         print(f'Exporting data from annotation file: {las_filepath}')
         elements = las_filepath.split('/')
