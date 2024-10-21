@@ -49,25 +49,25 @@ def process_paths(dataset_type, paths, output_folder):
     output_file = f'meta_data/itckul_{dataset_type}.txt'
     # Write the filenames to the text file
     with open(output_file, 'a') as file:
-        for filename in paths:
-            elems = filename.split('/')
+        for las_filepath in paths:        
+            elems = las_filepath.split('/')
             out_filename = elems[-1]
             out_filename = out_filename[:-4]  # Omit the .las extension
             file.write(f"{out_filename}\n")
-    for las_filepath in paths:        
-        print(f'Exporting data from annotation file: {las_filepath}')
-        elements = las_filepath.split('/')
-        out_filename = '_'.join(elements[-1:])  # Get the last part of the file path
-        out_filename = out_filename[:-4]  # Omit the .las extension
-        out_filename = osp.join(output_folder, out_filename)
+            print(f'Exporting data from annotation file: {las_filepath}')
+            elements = las_filepath.split('/')
+            out_filename = '_'.join(elements[-1:])  # Get the last part of the file path
+            out_filename = out_filename[:-4]  # Omit the .las extension
+            out_filename = f'{dataset_type}_{out_filename}'
+            out_filename = osp.join(output_folder, out_filename)
         
-        # Check if the file already exists
-        if osp.isfile(f'{dataset_type}_{out_filename}_point.npy'):
-            print(f'File {dataset_type}_{out_filename}_point.npy already exists. Skipping.')
-            continue
-        
-        # Export data
-        export(las_filepath, out_filename)
+            # Check if the file already exists
+            if osp.isfile(f'{out_filename}_point.npy'):
+                print(f'File {out_filename}_point.npy already exists. Skipping.')
+                continue
+            
+            # Export data
+            export(las_filepath, out_filename)
 
 for anno_path in anno_paths:    
     las_directory, las_filename = osp.split(anno_path)

@@ -159,6 +159,9 @@ if __name__ == '__main__':
     elif args.dataset == 's3dis':
         # Segmentation datasets are not affected
         pass
+    elif args.dataset == 'itckul':
+        # Maybe? Segmentation datasets are not affected
+        pass
     elif args.dataset == 'sunrgbd':
         # SUNRGBD infos is in DEPTH coord sys (changed)
         # and bbox is with yaw
