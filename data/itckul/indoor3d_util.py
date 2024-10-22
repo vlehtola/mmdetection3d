@@ -42,8 +42,9 @@ def export(anno_path, out_filename):
     las_file = laspy.read(anno_path)
 
     # Extract point data
+    # Scale down the 16-bit values to 8-bit by  // 256 floor division. ref LAS ASPRS documentation, the value is 2bytes
     points = np.vstack((las_file.x, las_file.y, las_file.z, 
-                        las_file.red, las_file.green, las_file.blue)).transpose()
+                        las_file.red // 256, las_file.green //256, las_file.blue //256)).transpose()
 
     # Extract semantic labels
     sem_labels = las_file.segmentation_labels #classification

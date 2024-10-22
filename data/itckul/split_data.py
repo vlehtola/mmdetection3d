@@ -25,7 +25,7 @@ def split_las_file(input_path, las_filename, block_size=500.0, train_ratio=0.7, 
     las_file = laspy.read('/'.join([input_path, las_filename]))
     print(f'Splitting LAS file, {las_filename}: {las_file}')
     # Create output directory and base file names
-    output_las_path_template = input_path + "/block_{}_{}.las"
+    output_las_path_template = input_path + "/{}_block_{}_{}.las"
     
     # Extract X coordinates directly without needing to extract all points first
     x_coords = las_file.X  # This avoids creating a large points array unnecessarily
@@ -86,7 +86,7 @@ def split_las_file(input_path, las_filename, block_size=500.0, train_ratio=0.7, 
             las_block.points = points
 
             # Define output path for this block
-            output_path = output_las_path_template.format(int(start), int(end))
+            output_path = output_las_path_template.format(str(las_filename), int(start), int(end))
             output_paths.append(output_path)
 
             # Write the block LAS file
