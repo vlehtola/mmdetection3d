@@ -1,8 +1,11 @@
 import numpy as np
 import os
-import random
+import argparse
 
-def check_bin_file(file_path, dtype=np.float32):
+# Define expected class labels for semantic masks
+EXPECTED_SEMANTIC_LABELS = set(range(15))  # Update this range based on your expected class IDs
+
+def check_bin_file(file_path, dtype=np.float32, verbose=True):
     """Read a .bin file and display its basic information."""
     if not os.path.exists(file_path):
         print(f"File {file_path} does not exist.")
@@ -11,31 +14,43 @@ def check_bin_file(file_path, dtype=np.float32):
     # Load the binary data
     data = np.fromfile(file_path, dtype=dtype)
     
-    # Print basic information about the data
-    print(f"File: {file_path}")
-    print(f"Data shape: {data.shape}")
+    if verbose:
+        print(f"Data shape: {data.shape} File: {file_path}")
     
     # For point cloud data (e.g., XYZ + RGB or XYZ + intensity), reshape if necessary
     if "points" in file_path:
         # Assume 6 features (e.g., XYZ + RGB or XYZ + intensity)
         data = data.reshape(-1, 6)
-        print(f"Reshaped points data: {data.shape}")
-        print(f"Some 5 points:\n{data[10000:]}")
-        # Check RGB values (columns 4, 5, 6) for being within [0, 255]
-        rgb_values = data[:, 2:5]  # RGB values are assumed to be in columns 3,4,5 (XYZ in 0,1,2)
+        if verbose:
+            print(f"Reshaped data: {data.shape}")
+            print(f"Some points:\n{data[10000:10003]}")
+        # Check RGB values (columns 3, 4, 5) for being within [0, 255]
+        rgb_values = data[:, 3:6]  # RGB values are assumed to be in columns 3, 4, 5
         if np.any((rgb_values < 0) | (rgb_values > 255)):
             print(f"Warning: Found RGB values out of range [0, 255] in {file_path}")
             invalid_rgb = rgb_values[(rgb_values < 0) | (rgb_values > 255)]
             print(f"Invalid RGB values: {invalid_rgb}")
-        else:
+        elif verbose:
             print(f"All RGB values are within the valid range [0, 255].")
-    else:
-        # For instance or semantic masks, display the unique values (e.g., instance IDs or class labels)
-        print(f"Unique values in {file_path}: {np.unique(data)}")
+
+    elif "semantic_mask" in file_path:
+        # For semantic masks, display the unique values and check for unexpected values
+        unique_values = np.unique(data)
+        if verbose:
+            print(f"Unique values in {file_path}: {unique_values}")
+        invalid_labels = [label for label in unique_values if label not in EXPECTED_SEMANTIC_LABELS]
+        if invalid_labels:
+            print(f"Warning: Found unexpected semantic labels in {file_path}: {invalid_labels}")
+        elif verbose:
+            print(f"All semantic mask values are within the expected range.")
     
+    # Print "ok" for non-verbose mode if there are no warnings
+    if not verbose:
+        print(f"ok {file_path}")
+
     return data
 
-def check_sample_files(data_dir, file_name):
+def check_sample_files(data_dir, file_name, verbose=True):
     """Check point cloud, instance mask, and semantic mask files for a specific sample."""
     
     # Define file paths for the point cloud, instance mask, and semantic mask
@@ -44,41 +59,43 @@ def check_sample_files(data_dir, file_name):
     semantic_mask_file = os.path.join(data_dir, 'semantic_mask', f'{file_name}.bin')
 
     # Check the point cloud file (assuming float32 for point clouds)
-    check_bin_file(point_cloud_file, dtype=np.float32)
+    check_bin_file(point_cloud_file, dtype=np.float32, verbose=verbose)
 
     # Check the instance mask file (assuming int64 for instance masks)
-    check_bin_file(instance_mask_file, dtype=np.int64)
+    check_bin_file(instance_mask_file, dtype=np.int64, verbose=verbose)
 
     # Check the semantic mask file (assuming int64 for semantic masks)
-    check_bin_file(semantic_mask_file, dtype=np.int64)
+    check_bin_file(semantic_mask_file, dtype=np.int64, verbose=verbose)
 
 
 if __name__ == "__main__":
-    # Set the root directory where the .bin files are stored
-    root_dir = './'  # Update this path based on your setup
-    file_list_path = './meta_data/itckul_val.txt'
+    parser = argparse.ArgumentParser(description="Validate multiple point cloud files listed in text files.")
+    parser.add_argument('--root_dir', type=str, default='./', help="Root directory where the .bin files are stored")
+    parser.add_argument('--file_list_paths', nargs='+', default=['./meta_data/itckul_val.txt', './meta_data/itckul_train.txt', './meta_data/itckul_test.txt'], help="List of paths to the text files containing file names")
+    parser.add_argument('--verbose', action='store_true', help="Enable verbose output")
 
-    split = 'train'
-    if 'val' in file_list_path:
-        split = 'val'
-    if 'test' in file_list_path:
-        split = 'test'
-    # Read the list of files from the text file
-    with open(file_list_path, 'r') as file_list:
-        files = file_list.readlines()
+    args = parser.parse_args()
 
-    # Remove any extra whitespace or newlines from each file entry
-    files = [file.strip() for file in files]
+    # Process each file list (val, train, test)
+    for file_list_path in args.file_list_paths:
+        # Determine the split based on the filename
+        if 'val' in file_list_path:
+            split = 'val'
+        elif 'train' in file_list_path:
+            split = 'train'
+        else:
+            continue
+        
+        # Read the list of files from the text file
+        with open(file_list_path, 'r') as file_list:
+            files = file_list.readlines()
 
-    random_file = random.choice(files)
-    print(f"Selected random file for validation: {random_file}")
-    if(True): 
-        check_sample_files(root_dir, f'{split}_{random_file}')
-    else: 
+        # Remove any extra whitespace or newlines from each file entry
+        files = [file.strip() for file in files]
+
         # Process each file in the list
         for file_name in files:
-            print(f"Validating file: {file_name}")
-            check_sample_files(root_dir, f'{split}_{file_name}')
-            
+            if args.verbose:
+                print(f"Validating file: {file_name}")
+            check_sample_files(args.root_dir, f'{split}_{file_name}', verbose=args.verbose)
             print("\n")
-
