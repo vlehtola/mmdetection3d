@@ -677,6 +677,8 @@ def update_scannet_infos(pkl_path, out_dir):
 
     mmengine.dump(converted_data_info, out_path, 'pkl')
 
+
+
 def update_itckul_infos(pkl_path, out_dir):
     print(f'{pkl_path} will be modified.')
     if out_dir in pkl_path:
@@ -692,7 +694,12 @@ def update_itckul_infos(pkl_path, out_dir):
     data_list = mmengine.load(pkl_path)
     print('Start updating:')
     converted_list = []
-    for ori_info_dict in mmengine.track_iter_progress(data_list):
+    for i, ori_info_dict in enumerate(mmengine.track_iter_progress(data_list)):
+        anns = ori_info_dict.get('annos', None)
+        if anns is not None and anns.get('gt_num', 0) == 0:
+            print(f"Skipping sample {i} due to no annotations.")
+            continue  # Skip this sample
+
         temp_data_info = get_empty_standard_data_info()
         temp_data_info['lidar_points']['num_pts_feats'] = ori_info_dict[
             'point_cloud']['num_features']
@@ -707,13 +714,10 @@ def update_itckul_infos(pkl_path, out_dir):
 
         # TODO support camera
         # np.linalg.inv(info['axis_align_matrix'] @ extrinsic): depth2cam
-        anns = ori_info_dict.get('annos', None)
+        # Process annotations
         ignore_class_name = set()
         if anns is not None:
-            if anns['gt_num'] == 0:
-                instance_list = []
-                print(f"Warning: instances dropped. Annotations: {anns}")
-            else:
+            if 'gt_boxes_upright_depth' in anns and anns['gt_num'] > 0:
                 num_instances = len(anns['class'])
                 instance_list = []
                 for instance_id in range(num_instances):
@@ -731,7 +735,10 @@ def update_itckul_infos(pkl_path, out_dir):
 
                     empty_instance = clear_instance_unused_keys(empty_instance)
                     instance_list.append(empty_instance)
-            temp_data_info['instances'] = instance_list
+                temp_data_info['instances'] = instance_list
+            else:
+                print(f"Sample {i} has annotations but no gt_boxes_upright_depth.")
+
         temp_data_info, _ = clear_data_info_unused_keys(temp_data_info)
         converted_list.append(temp_data_info)
     pkl_name = Path(pkl_path).name

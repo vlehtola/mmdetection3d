@@ -74,7 +74,7 @@ def analyze_data(data):
 def main():
     parser = argparse.ArgumentParser(description="Analyze a .bin file from the S3DIS dataset prepped with mmdetection3d.")
     parser.add_argument('--bin_path', type=str, required=True, help="Path to the .bin file (e.g., ./points.bin).")
-    parser.add_argument('--dtype', type=str, default='float32', choices=['float32', 'uint8', 'int32', 'uint16', 'float64'], help="Data type to interpret the .bin file.")
+    parser.add_argument('--dtype', type=str, default='float32', choices=['float32', 'int64', 'float64'], help="Data type to interpret the .bin file.")
     parser.add_argument('--expected_features', type=int, default=6, help="Number of features per point (e.g., 6 for x,y,z,r,g,b).")
     args = parser.parse_args()
 
@@ -83,7 +83,7 @@ def main():
         'float32': np.float32,
         'float64': np.float64,
         'uint8': np.uint8,
-        'uint16': np.uint16,
+        'int64': np.int64,
         'int32': np.int32
     }
     dtype = dtype_mapping.get(args.dtype, np.float32)

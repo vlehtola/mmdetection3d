@@ -50,6 +50,9 @@ def export(anno_path, out_filename):
     sem_labels = las_file.segmentation_labels #classification
     raw_ins_labels = las_file.object_labels         # Object instance labels
 
+    # Check the shape of sem_labels
+    print(f"Shape of sem_labels: {sem_labels.shape}")
+
     # Remap instance labels to ensure no empty labels
     ins_labels = remap_instance_labels(raw_ins_labels)
     # Map from 200 semantic label format of itckul dataset to 15 labels of s3dis format

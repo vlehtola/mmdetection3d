@@ -34,8 +34,8 @@ def check_bin_file(file_path, dtype=np.float32, verbose=True):
             print(f"All RGB values are within the valid range [0, 255].")
         
         rgb_dtype = data[:, 3:6].dtype
-        if rgb_dtype != np.uint8:
-            print(f"Error: RGB dtype in {file_path} is {rgb_dtype}, expected uint8.")
+        if rgb_dtype != np.float32:
+            print(f"Error: RGB dtype in {file_path} is {rgb_dtype}, expected float32.")
 
     elif "semantic_mask" in file_path:
         # For semantic masks, display the unique values and check for unexpected values
